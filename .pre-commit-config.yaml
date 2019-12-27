@@ -1,0 +1,7 @@
+-   repo: local
+    hooks:
+    - id: pylint
+      name: pylint
+      language: system
+      types: [python]
+      entry: "pipenv run pylint"

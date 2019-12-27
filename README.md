@@ -14,12 +14,6 @@ Install Pipenv (if needed)
 Install included packages
 > $ pipenv install
 
-Run Pytest
-> $ pipenv run python -m pytest
-
-Get code coverage report
-> $ pipenv run python -m pytest --cov=scripts tests/ --cov-fail-under=100
-
 Start the web server, default port is 8080
 > $ pipenv run airflow webserver -p 8080
 
@@ -31,14 +25,20 @@ Open with cURL or web browser
 
 ## Development 
 
+Install included packages (including development packages)
+> $ pipenv install --dev
+
+Set up git hook scripts with pre-commit
+> $ pipenv run pre-commit install
+
+Run Pytest
+> $ pipenv run python -m pytest
+
 Code coverage command with missing statement line numbers  
-> $ pipenv run python -m pytest --cov=scripts tests/ --cov-report term-missing
+> $ pipenv run python -m pytest --cov=airflow_home/dags/{scripts,modules} airflow_home/dags/tests/ --cov-report term-missing
 
 
 ## Continuous integration
 * CircleCI builds fail when trying to run coveralls.
     1. Log into coveralls.io to obtain the coverall token for your repo.
     2. Create an environment variable in CircleCI with the name COVERALLS_REPO_TOKEN and the coverall token value.
-
-## Heroku Integration
-* Set ACCESS_TOKEN environment variable and pass it as a header in requests

@@ -7,9 +7,15 @@ verify_ssl = true
 pylint = "*"
 pytest = "*"
 pytest-cov = "*"
+pre-commit = "*"
 
 [packages]
 apache-airflow = {extras = ["sentry"],version = "*"}
+sodapy = "*"
+coveralls = "*"
+pyjsend = "*"
+sentry-sdk = "*"
+screendoor-sdk = {git = "https://github.com/SFDigitalServices/screendoor-sdk-py.git",ref = "0.2.2"}
 
 [requires]
 python_version = "3.7"

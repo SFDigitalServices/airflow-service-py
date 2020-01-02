@@ -14,6 +14,9 @@ Install Pipenv (if needed)
 Install included packages
 > $ pipenv install
 
+Initialize the database
+> $ pipenv run airflow initdb
+
 Start the web server, default port is 8080
 > $ pipenv run airflow webserver -p 8080
 

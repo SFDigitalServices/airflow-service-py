@@ -121,4 +121,5 @@ dmypy.json
 # Airflow
 logs/
 airflow.db
-airflow-webserver.pid
+airflow-webserver.*
+airflow-webserver-monitor.*

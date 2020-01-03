@@ -1,0 +1,27 @@
+{
+  "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-dev",
+      "options": {
+        "version": "11"
+      }
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "env": {
+    "AIRFLOW_HOME": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "name": "airflow-service-py",
+  "scripts": {
+    "postdeploy": "export AIRFLOW__CORE__SQL_ALCHEMY_CONN=$DATABASE_URL && pipenv run airflow initdb"
+  },
+  "stack": "heroku-18"
+}

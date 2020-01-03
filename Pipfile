@@ -10,7 +10,7 @@ pytest-cov = "*"
 pre-commit = "*"
 
 [packages]
-apache-airflow = {extras = ["sentry"],version = "*"}
+apache-airflow = {extras = ["crypto,postgres,sentry"],version = "*"}
 sodapy = "*"
 coveralls = "*"
 pyjsend = "*"

@@ -5,8 +5,18 @@ SFDS Airflow Service (Python)
 * Python3 
 ([Mac OS X](https://docs.python-guide.org/starting/install3/osx/) / [Windows](https://www.stuartellis.name/articles/python-development-windows/))
 * Pipenv & Virtual Environments ([virtualenv](https://docs.python-guide.org/dev/virtualenvs/#virtualenvironments-ref) / [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/))
+* Postgres ([Mac OS X](https://wiki.postgresql.org/wiki/Homebrew))
 
 ## Get started
+
+Cloning this repository 
+> git clone https://github.com/SFDigitalServices/airflow-service-py.git my-airflow-service
+
+Go to project directory
+> $ cd my-airflow-service
+
+Setup Environmental variables (and update as needed)
+> $ cp .env.example .env
 
 Install Pipenv (if needed)
 > $ pip install --user pipenv
@@ -14,8 +24,15 @@ Install Pipenv (if needed)
 Install included packages
 > $ pipenv install
 
+Create Airflow database
+> psql postgres  
+> postgres=# CREATE DATABASE airflow
+
 Initialize the database
 > $ pipenv run airflow initdb
+
+Create a user
+> $ pipenv run airflow create_user --role=Admin --username=admin --email=admin@localhost --firstname=admin --lastname=user
 
 Start the web server, default port is 8080
 > $ pipenv run airflow webserver -p 8080
@@ -25,6 +42,11 @@ Start the scheduler
 
 Open with cURL or web browser
 > $ curl http://localhost:8080/
+
+### Airflow How-to Guides
+Quick Start: https://airflow.readthedocs.io/en/stable/start.html
+
+Securing Connection: https://airflow.readthedocs.io/en/stable/howto/secure-connections.html
 
 ## Development 
 

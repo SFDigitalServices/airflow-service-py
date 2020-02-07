@@ -7,7 +7,7 @@ import airflow
 from airflow import DAG
 #from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
-from scripts.ooc_proposed_retail import pull_from_screendoor, push_to_datasf
+from scripts.ooc_proposed_retail import pull_from_screendoor, push_to_datasf, notify_website
 
 # pylint: disable=invalid-name
 default_args = {
@@ -53,5 +53,12 @@ t2 = PythonOperator(
     dag=dag,
 )
 
+t3 = PythonOperator(
+    task_id='notify_website',
+    provide_context=True,
+    python_callable=notify_website,
+    dag=dag,
+)
+
 # pylint: disable=pointless-statement
-t1 >> t2
+t1 >> t2 >> t3

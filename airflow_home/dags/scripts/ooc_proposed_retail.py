@@ -1,5 +1,6 @@
 """ OOC Proposed Retail script """
 import os
+import requests
 import sentry_sdk
 from modules.ooc_proposed_retail import OOCProposedRetail
 from modules.datasf import DataSF
@@ -35,3 +36,18 @@ def push_to_datasf(**context):
     sentry_sdk.capture_message('ooc.proposed_retail.push_to_datasf', 'info')
 
     return replaced
+
+def notify_website(**context):
+    """ notifiy ooc website new data is available """
+    notified = False
+
+    notify_url = os.environ['OOC_WEB_NOTIFY']
+
+    if notify_url:
+        response = requests.get(notify_url)
+        notified = response.status_code
+
+        task_instance = context['task_instance']
+        task_instance.xcom_push(key="notify_website_response", value=response.text)
+
+    return notified

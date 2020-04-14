@@ -25,7 +25,7 @@ def pull_from_acuity(**context):
     pacific = pytz.timezone('US/Pacific')
     today = pacific.localize(datetime.datetime.today())
     tomorrow = (today + datetime.timedelta(days=1))
-
+    print('Passed in conf?', context['dag_run'].conf)
     # Get Acuity appointments and parse
     acuity = Acuity()
     citytest = CityTestSFAppointments()
@@ -86,7 +86,7 @@ def merge_with_formio(**context):
     final_appointments = citytest.merge_acuity_formio(parsed_appointments, parsed_formio_responses)
 
     context['task_instance'].xcom_push(key='final_appointments', value='final_appointments')
-    print('ending merge_with_formio', len(final_appointments), final_appointments[0])
+    print('ending merge_with_formio with {} appointments'.format(len(final_appointments)))
 
     return bool(final_appointments)
 
@@ -96,7 +96,7 @@ def send_to_color(**context):
     appointments = context['task_instance'].xcom_pull(
         task_ids='merge_with_formio', key='final_appointments')
 
-    print('final appointments?', len(appointments), appointments[0])
+    print('number of final appointments: ', len(appointments))
 
     return bool(appointments)
     # FIXME: Add stuff here.

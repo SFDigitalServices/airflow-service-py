@@ -12,7 +12,7 @@ class Color(Core):
     field_map = {
         'external_id': 'dsw',
         'external_appointment_id': 'acuityId',
-        'status': 'status',
+        'status': 'canceled',
         'first_name': 'firstName',
         'last_name': 'lastName',
         'email': 'email',
@@ -76,7 +76,7 @@ class Color(Core):
             formatted['last_reported_work_date']
         )
         formatted['applicant_will_drive'] = Color.yes_no_to_bool(formatted['applicant_will_drive'])
-
+        formatted['status'] = 'canceled' if formatted['status'] else 'scheduled'
         # flipping the logic from has no pcp to has pcp
         formatted['has_pcp'] = not formatted['has_pcp']
 

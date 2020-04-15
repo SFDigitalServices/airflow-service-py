@@ -1,3 +1,4 @@
+# pylint: skip-file
 """ OOC Proposed Retail script """
 import os
 import requests

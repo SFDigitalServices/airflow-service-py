@@ -66,11 +66,10 @@ def merge_with_formio(**context):
     parsed_appointment = context['task_instance'].xcom_pull(
         task_ids='pull_from_acuity', key='parsed_appointment')
 
-    formio = Formio()
     # DSW is not a unique ID so we may get multiple responses per DSW.
     # We just take the first one we get back for now.
     # TODO: Filter on form.io submission id or token instead.
-    formio_submissions = formio.get_formio_submissions(dsw_ids=[dsw])
+    formio_submissions = Formio.get_formio_submissions(dsw_ids=[dsw])
 
     parsed_formio_response = (
         CityTestSFAppointments.parse_formio_response(formio_submissions[0])[1]

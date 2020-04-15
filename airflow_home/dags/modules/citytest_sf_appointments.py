@@ -20,7 +20,8 @@ class CityTestSFAppointments(Core):
             'email',
             'datetime',
             'datetimeCreated',
-            'id'
+            'id',
+            'canceled'
         ]
         # Filter to only keys that we want
         parsed = dict((k, appointment[k]) for k in top_level_fields if k in appointment)

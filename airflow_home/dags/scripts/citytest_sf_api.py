@@ -28,7 +28,9 @@ def pull_from_acuity(**context):
         'info'
     )
     # FIXME: We'll filter out test appointments -> how to exit airflow early?
-    if (parsed_appointment['firstName'].lower() == 'test') and os.environ['FILTER_TEST_APPTS']:
+    if (parsed_appointment['firstName'].lower() == 'test') and (
+            os.environ['FILTER_TEST_APPTS'].lower() == 'true'
+        ):
         dsw = None
         sentry_sdk.capture_message(
             'citytest_sf_api.appointments.pull_from_acuity: Test appt found, returning None',
@@ -54,6 +56,7 @@ def merge_with_formio(**context):
         task_ids='pull_from_acuity', key='dsw')
 
     if not dsw:
+        print('no dsw')
         sentry_sdk.capture_message(
             'citytest_sf_api.appointments.merge_with_formio skipping due to missing dsw',
             'warning'
@@ -90,6 +93,7 @@ def send_to_color_api(**context):
         task_ids='merge_with_formio', key='final_appointment')
 
     if not appointment:
+        print('no appointment')
         sentry_sdk.capture_message(
             'citytest_sf_api.appointments.send_to_color_api no appointment found', 'warning')
         return True
@@ -97,6 +101,7 @@ def send_to_color_api(**context):
     color = Color()
     formatted = color.format_appointment(appointment)
     success = color.patch_appointment(formatted)
+    print('sent to color')
     sentry_sdk.capture_message('citytest_sf_api.appointments.send_to_color_api.end', 'info')
 
     return success

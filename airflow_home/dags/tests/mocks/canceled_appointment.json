@@ -1,0 +1,77 @@
+{
+  "id": 372424060,
+  "firstName": "test",
+  "lastName": "test",
+  "phone": "9783020023",
+  "email": "andrea.egan@sfgov.org",
+  "date": "April 17, 2020",
+  "time": "4:00pm",
+  "endTime": "4:30pm",
+  "dateCreated": "April 15, 2020",
+  "datetimeCreated": "2020-04-15T20:17:59-0500",
+  "datetime": "2020-04-17T16:00:00-0700",
+  "price": "0.00",
+  "priceSold": "0.00",
+  "paid": "no",
+  "amountPaid": "0.00",
+  "type": "COVID-19 test",
+  "appointmentTypeID": 13792985,
+  "classID": null,
+  "addonIDs": [],
+  "category": "",
+  "duration": "30",
+  "calendar": "CityTestSF - 4/16-4/17",
+  "calendarID": 3838867,
+  "certificate": null,
+  "confirmationPage": "https://app.acuityscheduling.com/schedule.php?owner=17643376&action=appt&id%5B%5D=42cb568313e56489aae51e83823f9164",
+  "location": "Piers 30-32, SF",
+  "notes": "",
+  "timezone": "America/Los_Angeles",
+  "calendarTimezone": "America/Los_Angeles",
+  "canceled": true,
+  "canClientCancel": false,
+  "canClientReschedule": false,
+  "labels": null,
+  "forms": [
+    {
+      "id": 1368026,
+      "name": "",
+      "values": [
+        {
+          "id": 1110325228,
+          "fieldID": 7514073,
+          "value": "000000",
+          "name": "DSW Number"
+        },
+        {
+          "id": 1110325230,
+          "fieldID": 7543629,
+          "value": "yes",
+          "name": "Are you driving to the site?"
+        }
+      ]
+    },
+    {
+      "id": 1369277,
+      "name": "Drive-thru testing verification (Internal Use)",
+      "values": [
+        {
+          "id": 1110325229,
+          "fieldID": 7521384,
+          "value": "5V6bBEm3daJys1z7bkZC0e5otjRDnmCoRSQuuZ3AwyX9QW65fHmNz1ChUaYXxoD",
+          "name": "Token"
+        },
+        {
+          "id": 1110325231,
+          "fieldID": 7570420,
+          "value": "",
+          "name": "External ID"
+        }
+      ]
+    }
+  ],
+  "formsText": "Name: test test\nPhone: (978) 302-0023\nEmail: andrea.egan@sfgov.org\n\nLocation\n============\nPiers 30-32, SF\n\n\n\n============\nDSW Number: 000000\n\nAre you driving to the site?: yes\n\n\n\nDrive-thru testing verification (Internal Use)\n============\nToken: 5V6bBEm3daJys1z7bkZC0e5otjRDnmCoRSQuuZ3AwyX9QW65fHmNz1ChUaYXxoD\n\nExternal ID: \n\n",
+  "noShow": false,
+  "isVerified": false,
+  "scheduledBy": null
+}

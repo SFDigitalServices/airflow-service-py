@@ -78,7 +78,8 @@ class Color(Core):
         formatted['applicant_will_drive'] = Color.yes_no_to_bool(formatted['applicant_will_drive'])
         formatted['status'] = 'canceled' if formatted['status'] else 'scheduled'
         # flipping the logic from has no pcp to has pcp
-        formatted['has_pcp'] = not formatted['has_pcp']
+        # pylint: disable=singleton-comparison
+        formatted['has_pcp'] = True if formatted['has_pcp'] == False else None
 
         # Strip out null values after parsing
         formatted = {k: v for k, v in formatted.items() if v is not None}
@@ -91,7 +92,7 @@ class Color(Core):
             appointment,
             api_endpoint=os.environ.get('COLOR_API_ENDPOINT'),
             password=os.environ.get('COLOR_API_PASSWORD'),
-            user=os.environ.get('COLOR_API_USER'),
+            user='',
         ):
         """Send appointment to Color via patch request."""
 
@@ -100,7 +101,7 @@ class Color(Core):
             auth=HTTPBasicAuth(user, password),
             json=appointment
         )
-        print('response.status', response.status_code)
+        print('response.status and text', response.status_code, response.text)
         response.raise_for_status()
 
         return response.ok

@@ -143,6 +143,12 @@ def test_format_appointment_formats_applicant_will_drive():
     resp = color.format_appointment(wont_drive)
     assert resp['applicant_will_drive'] is False
 
+def test_format_external_id_none():
+    """Verify we can parse external_id if it's none."""
+    color = Color()
+    appt = {**SAMPLE_APPOINTMENT, **{'dsw': None}}
+    resp = color.format_appointment(appt)
+    assert 'external_id' not in resp
 
 def test_format_contractor_appt():
     """Test case with contractor data"""

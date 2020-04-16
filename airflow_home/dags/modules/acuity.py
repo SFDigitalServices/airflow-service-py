@@ -69,10 +69,11 @@ class Acuity(Core):
         """Extract a value from a form.io form given the field's id."""
         # Looks like next is the most performant way to do this search
         # https://stackoverflow.com/questions/8653516/python-list-of-dictionaries-search
-        return next(
+        value = next(
             (item.get('value') for item in form if item['fieldID'] == field_id),
             None
         )
+        return value if value != '' else None
 
     @staticmethod
     def get_form_values(appointment, form_id):

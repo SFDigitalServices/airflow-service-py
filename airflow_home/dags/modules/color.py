@@ -97,7 +97,7 @@ class Color(Core):
             formatted['sex'] = formatted['sex'].upper()
         if 'birthday' in formatted:
             formatted['birthday'] = Color.isoformat_date(formatted['birthday'])
-        if 'external_id' in formatted:
+        if formatted.get('external_id', None):
             formatted['external_id'] = Color.format_dsw(formatted['external_id'])
         if 'phone_number' in formatted:
             formatted['phone_number'] = Color.format_phone(formatted['phone_number'])

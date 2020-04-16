@@ -71,6 +71,17 @@ def test_get_form_value_empty_form():
     value = Acuity.get_form_value([], 7514073)
     assert value is None
 
+def test_get_form_value_empty_string():
+    """Verify that if the field is present but has a value of empty string we return None."""
+    form_values = [{
+        'id': 1110646223,
+        'fieldID': 123,
+        'value': '',
+        'name': 'DSW Number'
+    }]
+    value = Acuity.get_form_value(form_values, 123)
+    assert value is None
+
 def test_get_form_value_missing_field():
     """Verify that get_form_value fails gracefully if the id is not found."""
     value = Acuity.get_form_value(SAMPLE_FORM_VALUES, 'wrong_id')

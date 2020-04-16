@@ -63,3 +63,21 @@ class Acuity(Core):
         response.raise_for_status()
 
         return response.json()
+
+    @staticmethod
+    def get_form_value(form, field_id):
+        """Extract a value from a form.io form given the field's id."""
+        # Looks like next is the most performant way to do this search
+        # https://stackoverflow.com/questions/8653516/python-list-of-dictionaries-search
+        return next(
+            (item.get('value') for item in form if item['fieldID'] == field_id),
+            None
+        )
+
+    @staticmethod
+    def get_form_values(appointment, form_id):
+        """Extract a form object from an acuity appt given the form id."""
+        return next(
+            (item.get('values') for item in appointment['forms'] if item['id'] == form_id),
+            []
+        )

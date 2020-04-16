@@ -4,6 +4,7 @@ import collections
 import sentry_sdk
 
 from modules.core import Core
+from modules.acuity import Acuity
 
 class CityTestSFAppointments(Core):
     """Functions related to business logic around CityTestSF appts."""
@@ -11,8 +12,10 @@ class CityTestSFAppointments(Core):
     def parse_appointment(appointment):
         """Retrieve fields needed from acuity appt."""
         dsw_field_id = 7514073
-        form_id = 1368026
+        user_entered_form_id = 1368026
         driving_field_id = 7543629
+        internal_use_form_id = 1369277
+        formio_id_field_id = 7570420
         top_level_fields = [
             'firstName',
             'lastName',
@@ -27,18 +30,14 @@ class CityTestSFAppointments(Core):
         parsed = dict((k, appointment[k]) for k in top_level_fields if k in appointment)
 
         # Get DSW and driving status from form
-        # Looks like next is the most performant way to do this search
-        # https://stackoverflow.com/questions/8653516/python-list-of-dictionaries-search
-        form = next(
-            (item.get('values') for item in appointment['forms'] if item['id'] == form_id),
-            []
-        )
-        dsw = next((item.get('value') for item in form if item['fieldID'] == dsw_field_id), None)
-        parsed['dsw'] = dsw if dsw else None
-        parsed['applicantWillDrive'] = next(
-            (item.get('value') for item in form if item['fieldID'] == driving_field_id),
-            None
-        )
+        user_entered_form = Acuity.get_form_values(appointment, user_entered_form_id)
+        parsed['dsw'] = Acuity.get_form_value(user_entered_form, dsw_field_id)
+        parsed['applicantWillDrive'] = Acuity.get_form_value(user_entered_form, driving_field_id)
+
+        # Get the formioId
+        machine_entered_form = Acuity.get_form_values(appointment, internal_use_form_id)
+        parsed['formioId'] = Acuity.get_form_value(machine_entered_form, formio_id_field_id)
+
 
         # Rename id and datetime
         parsed['acuityId'] = parsed.pop('id')

@@ -5,7 +5,10 @@ from modules.citytest_sf_appointments import CityTestSFAppointments
 
 def test_format_acuity_appointment():
     """Test formatting a sample canceled acuity appointment. """
-    with open('airflow_home/dags/tests/mocks/canceled_appointment.json', 'r') as appt_file:
+    with open(
+            'airflow_home/dags/tests/mocks/acuity_canceled_appointment_without_formio_id.json',
+            'r'
+        ) as appt_file:
         mock_appt = json.load(appt_file)
         appt = CityTestSFAppointments.parse_appointment(mock_appt)
 
@@ -19,9 +22,24 @@ def test_format_acuity_appointment():
         'applicantWillDrive': 'yes',
         'acuityId': 372424060,
         'appointmentDatetime': '2020-04-17T16:00:00-0700',
-        'acuityCreatedTime': '2020-04-15T20:17:59-0500'
+        'acuityCreatedTime': '2020-04-15T20:17:59-0500',
+        'formioId': None
     }
     assert appt == expected_acuity_appt
+    assert appt['formioId'] is None
+
+
+def test_format_acuity_appointment_with_formio_id():
+    """Test formatting a sample canceled acuity appointment. """
+    with open(
+            'airflow_home/dags/tests/mocks/acuity_appointment_with_formio_id.json',
+            'r'
+        ) as appt_file:
+        mock_appt = json.load(appt_file)
+        appt = CityTestSFAppointments.parse_appointment(mock_appt)
+
+    assert appt['formioId'] == '5e9892399e7436203dfe7250'
+
 
 def test_parse_formio_response():
     """Test formatting a sample form.io response without a pcp. """

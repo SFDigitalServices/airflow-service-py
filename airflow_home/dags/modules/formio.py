@@ -64,3 +64,31 @@ class Formio(Core):
             print('Error with formio request: ', response.text)
             raise
         return response.json()
+
+    @staticmethod
+    def get_formio_submission_by_id(
+            submission_id,
+            form_id=os.environ.get('FORMIO_FORM_ID'),
+            base_url=os.environ.get('FORMIO_BASE_URL'),
+            formio_api_key=os.environ.get('FORMIO_API_KEY'),
+        ):
+        """Given a formio id, retreive a submission"""
+        headers = {
+            'x-token': '{}'.format(formio_api_key),
+            'Content-Type': 'application/json'
+        }
+
+        url = '{base_url}/form/{form_id}/{submission_endpoint}/{submission_id}'.format(
+            base_url=base_url,
+            form_id=form_id,
+            submission_endpoint='submission',
+            submission_id=submission_id
+        )
+
+        response = requests.get(
+            url,
+            headers=headers
+        )
+        response.raise_for_status()
+
+        return response.json()

@@ -45,7 +45,7 @@ def test_parse_formio_response():
     """Test formatting a sample form.io response without a pcp. """
     with open('airflow_home/dags/tests/mocks/formio_response_no_pcp.json', 'r') as appt_file:
         mock_appt = json.load(appt_file)
-        dsw, appt = CityTestSFAppointments.parse_formio_response(mock_appt)
+        appt = CityTestSFAppointments.parse_formio_response(mock_appt)
 
     expected_appt = {
         'formioId': '5e97b23b49ccf626cb5dff6d',
@@ -57,5 +57,4 @@ def test_parse_formio_response():
         'pcpFieldSetIagreetosharemyinformationwithKaiser': None
     }
 
-    assert dsw == '000000'
     assert appt == expected_appt

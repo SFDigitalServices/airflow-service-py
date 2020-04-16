@@ -50,7 +50,6 @@ class CityTestSFAppointments(Core):
     def parse_formio_response(response):
         """Get desired fields from formio, return dsw and values."""
         data = response['data']
-        dsw = data['dsw']
 
         parsed = {
             'formioId': response['_id'],
@@ -66,7 +65,7 @@ class CityTestSFAppointments(Core):
         if 'pcp' in data:
             parsed.update(data['pcp'])
 
-        return (dsw, parsed)
+        return parsed
 
     @staticmethod
     def check_for_appt_duplicates(parsed_appts):

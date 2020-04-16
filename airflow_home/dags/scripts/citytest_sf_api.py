@@ -22,27 +22,20 @@ def pull_from_acuity(**context):
     parsed_appointment = CityTestSFAppointments.parse_appointment(appt)
 
     sentry_sdk.capture_message(
-        'citytest_sf.appointments.pull_from_acuity found appointment: {}'.format(
-            bool(parsed_appointment)
+        """
+        citytest_sf.appointments.pull_from_acuity found appointment with id {acuity_id},
+        formio_id {formio_id}
+        """.format(
+            acuity_id=acuity_id,
+            formio_id=parsed_appointment['formioId']
         ),
         'info'
     )
-    # FIXME: We'll filter out test appointments -> how to exit airflow early?
-    if (parsed_appointment['firstName'].lower() == 'test') and (
-            os.environ['FILTER_TEST_APPTS'].lower() == 'true'
-        ):
-        dsw = None
-        sentry_sdk.capture_message(
-            'citytest_sf_api.appointments.pull_from_acuity: Test appt found, returning None',
-            'warning'
-        )
-        # TODO: Exit airflow in a way that shows it's a success and avoids retries?
-    else:
-        dsw = parsed_appointment['dsw']
 
     # Save data
     task_instance = context['task_instance']
-    task_instance.xcom_push(key='dsw', value=dsw)
+    task_instance.xcom_push(key='dsw', value=parsed_appointment['dsw'])
+    task_instance.xcom_push(key='formio_id', value=parsed_appointment['formioId'])
     task_instance.xcom_push(key='parsed_appointment', value=parsed_appointment)
 
     sentry_sdk.capture_message('citytest_sf_api.appointments.pull_from_acuity.end', 'info')
@@ -52,16 +45,17 @@ def merge_with_formio(**context):
     """Get form.io responses for provided dsws, merge data together."""
     sentry_sdk.capture_message('citytest_sf_api.appointments.merge_with_formio.start', 'info')
 
-    dsw = context['task_instance'].xcom_pull(
-        task_ids='pull_from_acuity', key='dsw')
+    formio_id = context['task_instance'].xcom_pull(
+        task_ids='pull_from_acuity', key='formio_id')
 
-    if not dsw:
-        print('no dsw')
+    if not formio_id:
         sentry_sdk.capture_message(
-            'citytest_sf_api.appointments.merge_with_formio skipping due to missing dsw',
+            """
+            citytest_sf_api.appointments.merge_with_formio error due to missing formio_id.
+            acuity id: {}
+            """.format(context['dag_run'].conf.get('acuity_id', None)),
             'warning'
         )
-        return True
 
     parsed_appointment = context['task_instance'].xcom_pull(
         task_ids='pull_from_acuity', key='parsed_appointment')
@@ -69,11 +63,10 @@ def merge_with_formio(**context):
     # DSW is not a unique ID so we may get multiple responses per DSW.
     # We just take the first one we get back for now.
     # TODO: Filter on form.io submission id or token instead.
-    formio_submissions = Formio.get_formio_submissions(dsw_ids=[dsw])
-
+    # formio_submissions = Formio.get_formio_submissions(dsw_ids=[dsw])
+    formio_submission = Formio.get_formio_submission_by_id(formio_id)
     parsed_formio_response = (
-        CityTestSFAppointments.parse_formio_response(formio_submissions[0])[1]
-        if len(formio_submissions) > 0 else {}
+        CityTestSFAppointments.parse_formio_response(formio_submission)
     )
 
     # Merge them together
@@ -91,11 +84,24 @@ def send_to_color_api(**context):
     appointment = context['task_instance'].xcom_pull(
         task_ids='merge_with_formio', key='final_appointment')
 
+    if (appointment['firstName'].lower() == 'test') and (
+            os.environ['FILTER_TEST_APPTS'].lower() == 'true'
+        ):
+        sentry_sdk.capture_message(
+            'citytest_sf_api.appointments.pull_from_acuity: Test appt found, returning True',
+            'warning'
+        )
+        return True
+
     if not appointment:
         print('no appointment')
         sentry_sdk.capture_message(
-            'citytest_sf_api.appointments.send_to_color_api no appointment found', 'warning')
-        return True
+            """
+            citytest_sf_api.appointments.send_to_color_api no appointment found. acuity id: {}
+            """.format(context['dag_run'].conf.get('acuity_id', None)),
+            'warning'
+        )
+        return False
 
     color = Color()
     formatted = color.format_appointment(appointment)

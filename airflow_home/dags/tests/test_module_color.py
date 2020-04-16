@@ -5,8 +5,8 @@ from modules.color import Color
 SAMPLE_APPOINTMENT = {
     'firstName': 'test',
     'lastName': 'test',
-    'phone': '9783020023',
-    'email': 'andrea.egan@sfgov.org',
+    'phone': '4158675309',
+    'email': 'test@sfgov.org',
     'dsw': '000000',
     'applicantWillDrive': 'yes',
     'canceled': False,
@@ -34,8 +34,8 @@ SAMPLE_CANCELED = {**SAMPLE_APPOINTMENT, **{'canceled': True}}
 SAMPLE_WITHOUT_PCP = {
     'firstName': 'test',
     'lastName': 'test',
-    'phone': '9783020023',
-    'email': 'andrea.egan@sfgov.org',
+    'phone': '4158675309',
+    'email': 'test@sfgov.org',
     'dsw': '000000',
     'applicantWillDrive': 'yes',
     'canceled': False,
@@ -70,3 +70,35 @@ def test_app_without_pcp():
     resp = color.format_appointment(SAMPLE_WITHOUT_PCP)
     #pylint: disable=singleton-comparison
     assert resp['has_pcp'] == False
+
+def test_format_appointment_pads_phones():
+    """Verify that format_appointment formats phone numbers."""
+    color = Color()
+    resp = color.format_appointment(SAMPLE_APPOINTMENT)
+    #pylint: disable=singleton-comparison
+    assert resp['phone_number'] == '+14158675309'
+
+def test_format_appointment_pads_dsws():
+    """Verify format_appointment pads dsws if they are only 5 chars."""
+    color = Color()
+    appt = {**SAMPLE_APPOINTMENT, **{'dsw': '12345'}}
+    resp = color.format_appointment(appt)
+    #pylint: disable=singleton-comparison
+    assert resp['external_id'] == '012345'
+
+def test_format_appointment_formats_last_work_date():
+    """Verify format_appointment formats last work date correctly."""
+    color = Color()
+    resp = color.format_appointment(SAMPLE_APPOINTMENT)
+    #pylint: disable=singleton-comparison
+    assert resp['last_reported_work_date'] == '2020-04-14'
+
+def test_format_appointment_formats_applicant_will_drive():
+    """Verify format_appointment formats last work date correctly."""
+    color = Color()
+    resp = color.format_appointment(SAMPLE_APPOINTMENT)
+    assert resp['applicant_will_drive'] is True
+
+    wont_drive = {**SAMPLE_APPOINTMENT, **{'applicantWillDrive': 'no'}}
+    resp = color.format_appointment(wont_drive)
+    assert resp['applicant_will_drive'] is False

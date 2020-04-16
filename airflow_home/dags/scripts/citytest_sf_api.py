@@ -99,8 +99,7 @@ def send_to_color_api(**context):
 
     color = Color()
     formatted = color.format_appointment(appointment)
-    success = color.patch_appointment(formatted)
-    print('sent to color')
+    success = Color.patch_appointment(formatted)
     sentry_sdk.capture_message('citytest_sf_api.appointments.send_to_color_api.end', 'info')
 
     return success

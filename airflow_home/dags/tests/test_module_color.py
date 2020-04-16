@@ -51,6 +51,46 @@ SAMPLE_WITHOUT_PCP = {
     'pcpFieldSetIagreetosharemyinformationwithKaiser': None
 }
 
+SAMPLE_APPOINTMENT_CONTRACTOR = {
+    'firstName': 'test',
+    'lastName': 'test',
+    'phone': '4158675309',
+    'email': 'test@sfgov.org',
+    'applicantWillDrive': 'yes',
+    'canceled': False,
+    'acuityId': 372213232,
+    'appointmentDatetime': '2020-04-17T14:30:00-0700',
+    'acuityCreatedTime': '2020-04-14T22:53:56-0500',
+    'formioId': '5e98b4d69e74361dfbfe7fd8',
+    'formioSubmittedTime': '2020-04-16T19:41:10.657Z',
+    'workCity': 'San Francisco',
+    'workAddress': '1231 Stevenson st',
+    'homeState': 'CA',
+    'homeAddress': '123 Main St',
+    'pcpFieldSetIagreetosharemyinformationwithKaiser': None,
+    'panelFieldsetYourethnicity': 'iDoNotWishToSay',
+    'kaiserMedicalRecordNumber': None,
+    'primaryHolderHealthInsurance': 'parent',
+    'healthInsuranceGroupIdNumber': 'group id number',
+    'healthInsuranceIdNumber': 'insurance id number',
+    'primaryHolderHealthInsuranceFirstname': 'Parental',
+    'workState': 'CA',
+    'workZipcode': '94103',
+    'employerNotListed': None,
+    'primaryHolderHealthInsuranceLastname': 'unit',
+    'businessNotListed': False,
+    'lastReportedWorkDate': None,
+    'middleName': 'k',
+    'employer': 'AMR',
+    'homeZipcode': '94703',
+    'panelFieldsetYourdateofbirth': '01/01/1920',
+    'panelFieldsetYoursexatbirth': 'f',
+    'homeCity': 'Berkeley',
+    'insuranceCarrier': 'Health Net',
+    'hasNoPCP': None
+}
+
+
 def test_format_canceled_appointment():
     """Test that canceled appointments are passed to the correct key."""
     color = Color()
@@ -102,3 +142,41 @@ def test_format_appointment_formats_applicant_will_drive():
     wont_drive = {**SAMPLE_APPOINTMENT, **{'applicantWillDrive': 'no'}}
     resp = color.format_appointment(wont_drive)
     assert resp['applicant_will_drive'] is False
+
+
+def test_format_contractor_appt():
+    """Test case with contractor data"""
+    color = Color()
+    resp = color.format_appointment(SAMPLE_APPOINTMENT_CONTRACTOR)
+
+    expected = {
+        'external_appointment_id': 372213232,
+        'state': 'scheduled',
+        'first_name': 'test',
+        'last_name': 'test',
+        'email': 'test@sfgov.org',
+        'phone_number': '+14158675309',
+        'appointment_datetime': '2020-04-17T14:30:00-0700',
+        'applicant_will_drive': True,
+        'insurance_carrier': 'Health Net',
+        'has_pcp': False,
+        'external_appointment_created_at': '2020-04-14T22:53:56-0500',
+        'employer_name': 'AMR',
+        'birthday': '1920-01-01',
+        'ethnicity': 'iDoNotWishToSay',
+        'sex': 'F',
+        'middle_name': 'k',
+        'address_line1': '123 Main St',
+        'city': 'Berkeley',
+        'postal_code': '94703',
+        'worksite_address_line1': '1231 Stevenson st',
+        'worksite_city': 'San Francisco',
+        'worksite_state': 'CA',
+        'worksite_zip': '94103',
+        'insurance_primary_holder_first_name': 'Parental',
+        'insurance_primary_holder_last_name': 'unit',
+        'insurance_id': 'insurance id number',
+        'insurance_group_id': 'group id number',
+        'insurance_primary_holder': 'parent'
+    }
+    assert resp == expected

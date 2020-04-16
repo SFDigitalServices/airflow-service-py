@@ -1,3 +1,4 @@
+# pylint: disable=fixme
 """Functions related to business logic around CityTestSF appts."""
 import collections
 
@@ -51,17 +52,49 @@ class CityTestSFAppointments(Core):
         """Get desired fields from formio, return dsw and values."""
         data = response['data']
 
+        data_fields = {
+            'hasPCP',
+            'lastReportedWorkDate',
+            'insuranceCarrier',
+            'kaiserMedicalRecordNumber',
+            'pcpFieldSetIagreetosharemyinformationwithKaiser',
+            'employerNotListed',
+            'employer',
+            'businessNotListed',
+            'panelFieldsetYourdateofbirth',
+            'panelFieldsetYourethnicity',
+            'panelFieldsetYoursexatbirth',
+            'middleName',
+            'homeAddress',
+            'homeCity',
+            'homeState',
+            'homeZipcode',
+            'workAddress',
+            'workCity',
+            'workState',
+            'workZipcode',
+            'primaryHolderHealthInsuranceFirstname',
+            'primaryHolderHealthInsuranceLastname',
+            'healthInsuranceIdNumber',
+            'healthInsuranceGroupIdNumber',
+            'primaryHolderHealthInsurance',
+        }
+
         parsed = {
             'formioId': response['_id'],
             'formioSubmittedTime': response['created'],
-            'hasNoPCP': data.get('hasPCP', None),
-            'lastReportedWorkDate': data.get('lastReportedWorkDate', None),
-            'insuranceCarrier': data.get('insuranceCarrier', None),
-            'kaiserMedicalRecordNumber': data.get('kaiserMedicalRecordNumber', None),
-            'pcpFieldSetIagreetosharemyinformationwithKaiser': data.get(
-                'pcpFieldSetIagreetosharemyinformationwithKaiser', None
-            )
         }
+
+        for field in data_fields:
+            parsed[field] = data.get(field, None)
+
+        # TODO: fix this confusing logic.
+        parsed['hasNoPCP'] = parsed.pop('hasPCP', None)
+
+        # Merge unlisted employer data into employer if present
+        if parsed.get('businessNotListed'):
+            parsed['employer'] = parsed['employerNotListed']
+
         if 'pcp' in data:
             parsed.update(data['pcp'])
 

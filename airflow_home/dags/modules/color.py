@@ -33,7 +33,27 @@ class Color(Core):
         #pylint: disable=line-too-long
         'agree_to_share_information_with_kaiser': 'pcpFieldSetIagreetosharemyinformationwithKaiser',
         'kaiser_medical_record_number': 'kaiserMedicalRecordNumber',
+        # Contractor
+        'employer_name': 'employer',
+        'birthday': 'panelFieldsetYourdateofbirth',
+        'ethnicity': 'panelFieldsetYourethnicity',
+        'sex': 'panelFieldsetYoursexatbirth',
+        'middle_name': 'middleName',
+        'address_line1': 'homeAddress',
+        'city': 'homeCity',
+        # 'state': 'homeState', # Not sending now due to conflict with canceled state field
+        'postal_code': 'homeZipcode',
+        'worksite_address_line1': 'workAddress',
+        'worksite_city': 'workCity',
+        'worksite_state': 'workState',
+        'worksite_zip': 'workZipcode',
+        'insurance_primary_holder_first_name': 'primaryHolderHealthInsuranceFirstname',
+        'insurance_primary_holder_last_name': 'primaryHolderHealthInsuranceLastname',
+        'insurance_id': 'healthInsuranceIdNumber',
+        'insurance_group_id': 'healthInsuranceGroupIdNumber',
+        'insurance_primary_holder': 'primaryHolderHealthInsurance',
     }
+
 
     # TODO: format phone number correctly
     @staticmethod
@@ -59,6 +79,8 @@ class Color(Core):
     @staticmethod
     def isoformat_date(date_string):
         """Convert from mm/dd/yyyy to yyyy-mm-dd."""
+        if not date_string:
+            return None
         d_t = datetime.strptime(date_string, '%m/%d/%Y')
         return d_t.strftime('%Y-%m-%d')
 
@@ -69,9 +91,18 @@ class Color(Core):
             in self.field_map.items() if value in appointment
         }
 
+        # Format contractor fields if present
+        # TODO: do this with less copy pasta
+        if 'sex' in formatted:
+            formatted['sex'] = formatted['sex'].upper()
+        if 'birthday' in formatted:
+            formatted['birthday'] = Color.isoformat_date(formatted['birthday'])
+        if 'external_id' in formatted:
+            formatted['external_id'] = Color.format_dsw(formatted['external_id'])
+        if 'phone_number' in formatted:
+            formatted['phone_number'] = Color.format_phone(formatted['phone_number'])
+
         # Do some extra formatting to prep for sending to the Color API.
-        formatted['external_id'] = Color.format_dsw(formatted['external_id'])
-        formatted['phone_number'] = Color.format_phone(formatted['phone_number'])
         formatted['last_reported_work_date'] = Color.isoformat_date(
             formatted['last_reported_work_date']
         )
@@ -81,10 +112,12 @@ class Color(Core):
         # pylint: disable=singleton-comparison
         formatted['has_pcp'] = formatted['has_pcp'] == False
 
+        # Hardcode worksite state because we do not ask in the form.
+        formatted['worksite_state'] = 'CA'
+
         # Strip out null values after parsing
         formatted = {k: v for k, v in formatted.items() if v is not None}
 
-        # maybe just add a step to remove nulls?
         return formatted
 
     @staticmethod

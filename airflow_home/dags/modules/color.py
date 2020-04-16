@@ -12,7 +12,7 @@ class Color(Core):
     field_map = {
         'external_id': 'dsw',
         'external_appointment_id': 'acuityId',
-        'status': 'canceled',
+        'state': 'canceled',
         'first_name': 'firstName',
         'last_name': 'lastName',
         'email': 'email',
@@ -76,10 +76,10 @@ class Color(Core):
             formatted['last_reported_work_date']
         )
         formatted['applicant_will_drive'] = Color.yes_no_to_bool(formatted['applicant_will_drive'])
-        formatted['status'] = 'canceled' if formatted['status'] else 'scheduled'
+        formatted['state'] = 'canceled' if formatted['state'] else 'scheduled'
         # flipping the logic from has no pcp to has pcp
         # pylint: disable=singleton-comparison
-        formatted['has_pcp'] = True if formatted['has_pcp'] == False else None
+        formatted['has_pcp'] = formatted['has_pcp'] == False
 
         # Strip out null values after parsing
         formatted = {k: v for k, v in formatted.items() if v is not None}

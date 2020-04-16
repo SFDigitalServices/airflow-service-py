@@ -150,6 +150,13 @@ def test_format_external_id_none():
     resp = color.format_appointment(appt)
     assert 'external_id' not in resp
 
+def test_format_sex_none():
+    """Verify we can parse sex if it's none."""
+    color = Color()
+    appt = {**SAMPLE_APPOINTMENT, **{'sex': None}}
+    resp = color.format_appointment(appt)
+    assert 'sex' not in resp
+
 def test_format_contractor_appt():
     """Test case with contractor data"""
     color = Color()

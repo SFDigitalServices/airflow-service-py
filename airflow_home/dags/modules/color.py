@@ -93,7 +93,7 @@ class Color(Core):
 
         # Format contractor fields if present
         # TODO: do this with less copy pasta
-        if 'sex' in formatted:
+        if formatted.get('sex', None):
             formatted['sex'] = formatted['sex'].upper()
         if 'birthday' in formatted:
             formatted['birthday'] = Color.isoformat_date(formatted['birthday'])

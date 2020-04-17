@@ -41,6 +41,7 @@ class Color(Core):
         'middle_name': 'middleName',
         'address_line1': 'homeAddress',
         'city': 'homeCity',
+        'county': 'county',
         # 'state': 'homeState', # Not sending now due to conflict with canceled state field
         'postal_code': 'homeZipcode',
         'worksite_address_line1': 'workAddress',

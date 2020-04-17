@@ -6,7 +6,12 @@ import airflow
 from airflow import DAG
 #from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
-from scripts.citytest_sf_api import pull_from_acuity, merge_with_formio, send_to_color_api
+from scripts.citytest_sf_api import (
+    get_county,
+    pull_from_acuity,
+    merge_with_formio,
+    send_to_color_api
+)
 
 # pylint: disable=invalid-name
 default_args = {
@@ -52,7 +57,15 @@ t2 = PythonOperator(
     dag=dag,
 )
 
+
 t3 = PythonOperator(
+    task_id='get_county',
+    provide_context=True,
+    python_callable=get_county,
+    dag=dag,
+)
+
+t4 = PythonOperator(
     task_id='send_to_color_api',
     provide_context=True,
     python_callable=send_to_color_api,
@@ -60,4 +73,4 @@ t3 = PythonOperator(
 )
 
 # pylint: disable=pointless-statement
-t1 >> t2 >> t3
+t1 >> t2 >> t3 >> t4

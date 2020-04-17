@@ -101,13 +101,13 @@ def get_county(**context):
         task_ids='merge_with_formio', key='final_appointment')
 
     try:
-        city = appointment.get('city', None)
-        state = appointment.get('state', None)
+        city = appointment.get('homeCity', None)
+        state = appointment.get('homeState', None)
+        print('city and state', city, state)
         if city and state:
             geocoded = GoogleMaps.geocode(city=city, state=state)
             county = GoogleMaps.get_county_from_geocode(geocoded)
-            if county:
-                appointment['county'] = county
+            appointment['county'] = county
     #pylint: disable=broad-except
     except Exception as exp:
         context['task_instance'].xcom_push(key='appointment_with_county', value=appointment)
@@ -121,6 +121,8 @@ def get_county(**context):
         return True
 
     context['task_instance'].xcom_push(key='appointment_with_county', value=appointment)
+
+    return True
 
 
 def send_to_color_api(**context):

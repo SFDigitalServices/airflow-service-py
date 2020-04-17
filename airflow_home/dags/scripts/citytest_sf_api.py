@@ -7,6 +7,7 @@ from modules.formio import Formio
 from modules.acuity import Acuity
 from modules.citytest_sf_appointments import CityTestSFAppointments
 from modules.color import Color
+from modules.google_maps import GoogleMaps
 
 def pull_from_acuity(**context):
     """Pull appointments from acuity."""
@@ -93,12 +94,43 @@ def merge_with_formio(**context):
 
     return bool(final_appointment)
 
+#pylint: disable=inconsistent-return-statements
+def get_county(**context):
+    """Add county data to appointment."""
+    appointment = context['task_instance'].xcom_pull(
+        task_ids='merge_with_formio', key='final_appointment')
+
+    try:
+        city = appointment.get('homeCity', None)
+        state = appointment.get('homeState', None)
+        print('city and state', city, state)
+        if city and state:
+            geocoded = GoogleMaps.geocode(city=city, state=state)
+            county = GoogleMaps.get_county_from_geocode(geocoded)
+            appointment['county'] = county
+    #pylint: disable=broad-except
+    except Exception as exp:
+        context['task_instance'].xcom_push(key='appointment_with_county', value=appointment)
+        sentry_sdk.capture_message(
+            """
+            citytest_sf_api.appointments.get_county error getting county.
+            acuity id: {id}, error: {error}
+            """.format(id=context['dag_run'].conf.get('acuity_id', None), error=exp),
+            'error'
+        )
+        return True
+
+    context['task_instance'].xcom_push(key='appointment_with_county', value=appointment)
+
+    return True
+
+
 def send_to_color_api(**context):
     """Send data to Color's API."""
     sentry_sdk.capture_message('citytest_sf_api.appointments.send_to_color_api.start', 'info')
 
     appointment = context['task_instance'].xcom_pull(
-        task_ids='merge_with_formio', key='final_appointment')
+        task_ids='get_county', key='appointment_with_county')
 
     if (appointment['firstName'].lower() == 'test') and (
             os.environ['FILTER_TEST_APPTS'].lower() == 'true'

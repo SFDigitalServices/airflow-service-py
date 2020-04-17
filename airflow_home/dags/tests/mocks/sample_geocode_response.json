@@ -1,0 +1,69 @@
+{
+  "address_components": [
+    {
+      "long_name": "San Mateo",
+      "short_name": "San Mateo",
+      "types": [
+        "locality",
+        "political"
+      ]
+    },
+    {
+      "long_name": "San Mateo County",
+      "short_name": "San Mateo County",
+      "types": [
+        "administrative_area_level_2",
+        "political"
+      ]
+    },
+    {
+      "long_name": "California",
+      "short_name": "CA",
+      "types": [
+        "administrative_area_level_1",
+        "political"
+      ]
+    },
+    {
+      "long_name": "United States",
+      "short_name": "US",
+      "types": [
+        "country",
+        "political"
+      ]
+    }
+  ],
+  "formatted_address": "San Mateo, CA, USA",
+  "geometry": {
+    "bounds": {
+      "northeast": {
+        "lat": 37.6021349,
+        "lng": -122.275478
+      },
+      "southwest": {
+        "lat": 37.510937,
+        "lng": -122.3557821
+      }
+    },
+    "location": {
+      "lat": 37.5629917,
+      "lng": -122.3255254
+    },
+    "location_type": "APPROXIMATE",
+    "viewport": {
+      "northeast": {
+        "lat": 37.6021349,
+        "lng": -122.275478
+      },
+      "southwest": {
+        "lat": 37.510937,
+        "lng": -122.3557821
+      }
+    }
+  },
+  "place_id": "ChIJRVWp72Cej4ARpxvMLfT8jv0",
+  "types": [
+    "locality",
+    "political"
+  ]
+}

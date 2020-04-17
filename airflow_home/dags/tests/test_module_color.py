@@ -90,6 +90,9 @@ SAMPLE_APPOINTMENT_CONTRACTOR = {
     'hasNoPCP': None
 }
 
+def test_format_date_2_digit_year():
+    """Verify that we can handle 2 digit years."""
+    assert False
 
 def test_format_canceled_appointment():
     """Test that canceled appointments are passed to the correct key."""
@@ -193,3 +196,17 @@ def test_format_contractor_appt():
         'insurance_primary_holder': 'parent'
     }
     assert resp == expected
+
+def test_format_with_county():
+    """Check that county data is included if present."""
+    color = Color()
+    # Test without county
+    resp = color.format_appointment(SAMPLE_APPOINTMENT_CONTRACTOR)
+
+    assert 'county' not in resp
+
+    # Test with county
+    appt = {**SAMPLE_APPOINTMENT_CONTRACTOR, **{'county': 'Alameda County'}}
+    resp = color.format_appointment(appt)
+
+    assert resp['county'] == 'Alameda County'

@@ -1,4 +1,5 @@
 # pylint: disable=fixme
+# pylint: disable=trailing-newlines
 """CityTest SF send appts to Color scripts"""
 import os
 import sentry_sdk
@@ -153,7 +154,23 @@ def send_to_color_api(**context):
 
     color = Color()
     formatted = color.format_appointment(appointment)
-    success = Color.patch_appointment(formatted)
+    try:
+        response = Color.patch_appointment(formatted)
+        response.raise_for_status()
+    #pylint: disable=broad-except
+    except Exception:
+        sentry_sdk.capture_message(
+            """
+            citytest_sf_api.send_to_color_api error.
+            acuity id: {id}, status code: {status_code} error: {error}
+            """.format(
+                id=context['dag_run'].conf.get('acuity_id', None),
+                status_code=response.status,
+                error=response.text
+            ),
+            'error'
+        )
     sentry_sdk.capture_message('citytest_sf_api.appointments.send_to_color_api.end', 'info')
+    return response.ok
 
-    return success
+

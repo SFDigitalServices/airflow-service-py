@@ -70,14 +70,13 @@ def merge_with_formio(**context):
         )
         formio_submission = Formio.get_formio_submissions(dsw_ids=[dsw])[0]
     else:
-        sentry_sdk.capture_message(
+        raise Exception(
             """
-            citytest_sf_api.appointments.merge_with_formio error due to missing formio_id and dsw.
-            acuity id: {}
-            """.format(context['dag_run'].conf.get('acuity_id', None)),
-            'error'
+            citytest_sf_api.appointments.send_to_color_api no appointment found. acuity id: {}
+            """.format(context['dag_run'].conf.get('acuity_id', None))
         )
-        return False
+
+
 
     # DSW is not a unique ID so we may get multiple responses per DSW.
     # We just take the first one we get back for now.
@@ -144,13 +143,11 @@ def send_to_color_api(**context):
 
     if not appointment:
         print('no appointment')
-        sentry_sdk.capture_message(
+        raise Exception(
             """
             citytest_sf_api.appointments.send_to_color_api no appointment found. acuity id: {}
-            """.format(context['dag_run'].conf.get('acuity_id', None)),
-            'warning'
+            """.format(context['dag_run'].conf.get('acuity_id', None))
         )
-        return False
 
     color = Color()
     formatted = color.format_appointment(appointment)
@@ -170,6 +167,8 @@ def send_to_color_api(**context):
             ),
             'error'
         )
+        raise
+
     sentry_sdk.capture_message('citytest_sf_api.appointments.send_to_color_api.end', 'info')
     return response.ok
 

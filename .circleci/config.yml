@@ -52,7 +52,7 @@ jobs:
       - run:
           name: run tests
           command: |
-            pipenv run python -m pytest --cov=airflow_home/dags/{scripts,modules} airflow_home/dags/tests/ --cov-fail-under=100
+            pipenv run python -m pytest --cov=airflow_home/dags/{scripts,modules} airflow_home/dags/tests/ --cov-fail-under=58
             pipenv run coveralls
 
 

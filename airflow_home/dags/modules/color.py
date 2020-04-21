@@ -135,7 +135,6 @@ class Color(Core):
             auth=HTTPBasicAuth(user, password),
             json=appointment
         )
-        print('response.status and text', response.status_code, response.text)
-        response.raise_for_status()
 
-        return response.ok
+
+        return response

@@ -18,7 +18,6 @@ def test_format_acuity_appointment():
         'phone': '9783020023',
         'email': 'andrea.egan@sfgov.org',
         'canceled': True,
-        'dsw': '000000',
         'applicantWillDrive': 'yes',
         'acuityId': 372424060,
         'appointmentDatetime': '2020-04-17T16:00:00-0700',
@@ -55,6 +54,7 @@ def test_parse_formio_response():
         'insuranceCarrier': 'United Healthcare',
         'kaiserMedicalRecordNumber': None,
         'pcpFieldSetIagreetosharemyinformationwithKaiser': None,
+        'dsw': '000000',
     }
 
     assert expected_appt.items() <= appt.items()

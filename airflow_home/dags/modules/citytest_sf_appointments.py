@@ -12,7 +12,6 @@ class CityTestSFAppointments(Core):
     @staticmethod
     def parse_appointment(appointment):
         """Retrieve fields needed from acuity appt."""
-        dsw_field_id = 7514073
         user_entered_form_id = 1368026
         driving_field_id = 7543629
         internal_use_form_id = 1369277
@@ -32,7 +31,6 @@ class CityTestSFAppointments(Core):
 
         # Get DSW and driving status from form
         user_entered_form = Acuity.get_form_values(appointment, user_entered_form_id)
-        parsed['dsw'] = Acuity.get_form_value(user_entered_form, dsw_field_id)
         parsed['applicantWillDrive'] = Acuity.get_form_value(user_entered_form, driving_field_id)
 
         # Get the formioId
@@ -53,6 +51,7 @@ class CityTestSFAppointments(Core):
         data = response['data']
 
         data_fields = {
+            'dsw',
             'hasPCP',
             'lastReportedWorkDate',
             'insuranceCarrier',

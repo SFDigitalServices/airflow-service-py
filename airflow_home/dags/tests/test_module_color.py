@@ -90,10 +90,6 @@ SAMPLE_APPOINTMENT_CONTRACTOR = {
     'hasNoPCP': None
 }
 
-def test_format_date_2_digit_year():
-    """Verify that we can handle 2 digit years."""
-    assert False
-
 def test_format_canceled_appointment():
     """Test that canceled appointments are passed to the correct key."""
     color = Color()

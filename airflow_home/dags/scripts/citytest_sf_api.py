@@ -36,7 +36,6 @@ def pull_from_acuity(**context):
 
     # Save data
     task_instance = context['task_instance']
-    task_instance.xcom_push(key='dsw', value=parsed_appointment['dsw'])
     task_instance.xcom_push(key='formio_id', value=parsed_appointment['formioId'])
     task_instance.xcom_push(key='parsed_appointment', value=parsed_appointment)
 
@@ -44,11 +43,8 @@ def pull_from_acuity(**context):
     return bool(parsed_appointment)
 
 def merge_with_formio(**context):
-    """Get form.io responses for provided dsws, merge data together."""
+    """Get form.io responses for provided formio id, merge data together."""
     sentry_sdk.capture_message('citytest_sf_api.appointments.merge_with_formio.start', 'info')
-
-    dsw = context['task_instance'].xcom_pull(
-        task_ids='pull_from_acuity', key='dsw')
 
     formio_id = context['task_instance'].xcom_pull(
         task_ids='pull_from_acuity', key='formio_id')
@@ -59,16 +55,6 @@ def merge_with_formio(**context):
     if formio_id:
         print('formio id found', formio_id)
         formio_submission = Formio.get_formio_submission_by_id(formio_id)
-    elif dsw:
-        print('dsw id found', dsw)
-        sentry_sdk.capture_message(
-            """
-            citytest_sf_api.appointments.merge_with_formio error due to missing formio_id.
-            acuity id: {}
-            """.format(context['dag_run'].conf.get('acuity_id', None)),
-            'warning'
-        )
-        formio_submission = Formio.get_formio_submissions(dsw_ids=[dsw])[0]
     else:
         raise Exception(
             """
@@ -76,12 +62,6 @@ def merge_with_formio(**context):
             """.format(context['dag_run'].conf.get('acuity_id', None))
         )
 
-
-
-    # DSW is not a unique ID so we may get multiple responses per DSW.
-    # We just take the first one we get back for now.
-    # TODO: Filter on form.io submission id or token instead.
-    # formio_submissions = Formio.get_formio_submissions(dsw_ids=[dsw])
     parsed_formio_response = (
         CityTestSFAppointments.parse_formio_response(formio_submission)
     )

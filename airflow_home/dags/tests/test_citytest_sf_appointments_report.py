@@ -62,3 +62,8 @@ class MockWorksheet:
     def insert_rows(row, number=1, values=None, inherit=False):
         """ insert_rows """
         return True
+
+    @staticmethod
+    def resize(rows=None, cols=None):
+        """ resize """
+        return True

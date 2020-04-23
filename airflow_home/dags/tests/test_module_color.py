@@ -1,5 +1,6 @@
 # pylint: disable=duplicate-code
 """Test functions from Color module."""
+import pytest
 from modules.color import Color
 
 SAMPLE_APPOINTMENT = {
@@ -54,7 +55,7 @@ SAMPLE_WITHOUT_PCP = {
 }
 
 SAMPLE_APPOINTMENT_CONTRACTOR = {
-    'calendarId': 3838867,
+    'calendarID': 3838867,
     'firstName': 'test',
     'lastName': 'test',
     'phone': '4158675309',
@@ -96,24 +97,33 @@ SAMPLE_APPOINTMENT_CONTRACTOR = {
 def test_get_collection_site_returns_embarcadero():
     """Check that get_collection_site identifies the right site."""
     color = Color()
-    appt = {'calendarId': 3838867}
+    appt = {'calendarID': 3838867}
+    resp = color.get_collection_site(appt)
+    assert resp == 'Embarcadero'
+
+    appt = {'calendarID': 3873144}
     resp = color.get_collection_site(appt)
     assert resp == 'Embarcadero'
 
 def test_get_collection_site_returns_soma():
     """Check that get_collection_site identifies the right site."""
     color = Color()
-    appt = {'calendarId': 3872720}
+    appt = {'calendarID': 3872720}
     resp = color.get_collection_site(appt)
     assert resp == 'SOMA'
 
-def test_get_collection_site_defaults_to_embarcadero():
-    """Check that get_collection_site identifies the right site."""
+def test_get_collection_site_raises_if_not_found():
+    """Check that get_collection_site raises an error if the calendar id doesn't match."""
     color = Color()
-    appt = {'calendarId': 'not_a_real_id'}
-    resp = color.get_collection_site(appt)
-    assert resp == 'Embarcadero'
-    assert False # need to add sentry + verify that it's called
+    appt = {
+        'calendarID': 'not_a_real_id',
+        'acuityId': 'acuity id'
+    }
+    with pytest.raises(
+            Exception,
+            match=r"Collection site not found for acuity id: acuity id, calendar id: not_a_real_id"
+        ):
+        color.get_collection_site(appt)
 
 def test_format_canceled_appointment():
     """Test that canceled appointments are passed to the correct key."""

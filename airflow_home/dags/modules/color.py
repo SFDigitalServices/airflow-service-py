@@ -58,6 +58,8 @@ class Color(Core):
     EMBARCADERO_SITE_NAME = 'Embarcadero'
     SOMA_SITE_NAME = 'SOMA'
 
+    EMBARCADERO_CALENDAR_IDS = os.environ.get('EMBARCADERO_CALENDAR_IDS').split(',')
+    SOMA_CALENDAR_IDS = os.environ.get('SOMA_CALENDAR_IDS').split(',')
     # TODO: format phone number correctly
     @staticmethod
     def format_phone(phone):
@@ -90,14 +92,15 @@ class Color(Core):
     def get_collection_site(self, appointment):
         """Return collection site based on calendar id."""
         cal_id = str(appointment.get('calendarID', None))
-        if cal_id == os.environ.get('EMBARCADERO_CALENDAR_ID'):
+        if cal_id in self.EMBARCADERO_CALENDAR_IDS:
             return self.EMBARCADERO_SITE_NAME
-        if cal_id == os.environ.get('SOMA_CALENDAR_ID'):
+        if cal_id in self.SOMA_CALENDAR_IDS:
             return self.SOMA_SITE_NAME
-        # Raise sentry warning.
-        # Default to Embarcadero.
-        print('Warning: Defaulting to Embarcadero', cal_id)
-        return self.EMBARCADERO_SITE_NAME
+        raise Exception(
+            """
+            Collection site not found for acuity id: {}, calendar id: {}
+            """.format(appointment.get('acuityId', None), appointment.get('calendarID', None))
+        )
 
 
 

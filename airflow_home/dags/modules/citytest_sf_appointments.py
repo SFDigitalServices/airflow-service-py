@@ -10,7 +10,7 @@ from modules.acuity import Acuity
 class CityTestSFAppointments(Core):
     """Functions related to business logic around CityTestSF appts."""
     @staticmethod
-    def parse_appointment(appointment):
+    def parse_appointment(appointment, extra_fields=None):
         """Retrieve fields needed from acuity appt."""
         user_entered_form_id = 1368026
         driving_field_id = 7543629
@@ -26,6 +26,8 @@ class CityTestSFAppointments(Core):
             'id',
             'canceled'
         ]
+        if extra_fields:
+            top_level_fields += extra_fields
         # Filter to only keys that we want
         parsed = dict((k, appointment[k]) for k in top_level_fields if k in appointment)
 

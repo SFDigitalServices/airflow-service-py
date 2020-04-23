@@ -17,6 +17,8 @@ pyjsend = "*"
 sentry-sdk = "*"
 screendoor-sdk = {git = "https://github.com/SFDigitalServices/screendoor-sdk-py.git",ref = "0.2.2"}
 flask-bcrypt = "*"
+pygsheets = "*"
+email-validator = "*"
 
 [requires]
 python_version = "3.7"

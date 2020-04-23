@@ -55,6 +55,8 @@ class Color(Core):
         'insurance_primary_holder': 'primaryHolderHealthInsurance',
     }
 
+    EMBARCADERO_SITE_NAME = 'Embarcadero'
+    SOMA_SITE_NAME = 'SOMA'
 
     # TODO: format phone number correctly
     @staticmethod
@@ -84,6 +86,20 @@ class Color(Core):
             return None
         d_t = datetime.strptime(date_string, '%m/%d/%Y')
         return d_t.strftime('%Y-%m-%d')
+
+    def get_collection_site(self, appointment):
+        """Return collection site based on calendar id."""
+        cal_id = str(appointment.get('calendarID', None))
+        if cal_id == os.environ.get('EMBARCADERO_CALENDAR_ID'):
+            return self.EMBARCADERO_SITE_NAME
+        if cal_id == os.environ.get('SOMA_CALENDAR_ID'):
+            return self.SOMA_SITE_NAME
+        # Raise sentry warning.
+        # Default to Embarcadero.
+        print('Warning: Defaulting to Embarcadero', cal_id)
+        return self.EMBARCADERO_SITE_NAME
+
+
 
     def format_appointment(self, appointment):
         """Take our parsed appointment and ensure it has correct keys and values for Color."""
@@ -115,6 +131,9 @@ class Color(Core):
 
         # Hardcode worksite state because we do not ask in the form.
         formatted['worksite_state'] = 'CA'
+
+        # Get the collection site
+        formatted['collection_site'] = self.get_collection_site(appointment)
 
         # Strip out null values after parsing
         formatted = {k: v for k, v in formatted.items() if v not in (None, '')}

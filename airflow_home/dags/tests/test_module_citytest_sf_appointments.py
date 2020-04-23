@@ -22,7 +22,8 @@ def test_format_acuity_appointment():
         'acuityId': 372424060,
         'appointmentDatetime': '2020-04-17T16:00:00-0700',
         'acuityCreatedTime': '2020-04-15T20:17:59-0500',
-        'formioId': None
+        'formioId': None,
+        'calendarID': 3838867
     }
     assert appt == expected_acuity_appt
     assert appt['formioId'] is None

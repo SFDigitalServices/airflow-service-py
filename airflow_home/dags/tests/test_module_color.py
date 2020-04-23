@@ -206,3 +206,13 @@ def test_format_with_county():
     resp = color.format_appointment(appt)
 
     assert resp['county'] == 'Alameda County'
+
+def test_filters_out_empty_strings():
+    """Check that we exclude empty strings if present."""
+    color = Color()
+
+    # Test with county
+    appt = {**SAMPLE_APPOINTMENT_CONTRACTOR, **{'middleName': ''}}
+    resp = color.format_appointment(appt)
+
+    assert 'middle_name' not in resp

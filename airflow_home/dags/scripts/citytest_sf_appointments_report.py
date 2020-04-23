@@ -105,6 +105,7 @@ def upload_data_to_google(data):
     worksheet = sheet.worksheet('title', google_sheet)
     if len(data) > 0:
         worksheet.clear()
+        worksheet.resize(10)
         worksheet.insert_rows(0, number=len(data), values=data)
 
     sentry_sdk.capture_message(

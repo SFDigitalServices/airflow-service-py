@@ -57,10 +57,6 @@ def prep_data_for_report(data):
     fields = [
         "acuityId",
         "appointmentTypeID",
-        "firstName",
-        "lastName",
-        "phone",
-        "email",
         "applicantWillDrive",
         "appointmentDatetime",
         "acuityCreatedTime",

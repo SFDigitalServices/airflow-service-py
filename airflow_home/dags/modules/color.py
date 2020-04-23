@@ -117,7 +117,7 @@ class Color(Core):
         formatted['worksite_state'] = 'CA'
 
         # Strip out null values after parsing
-        formatted = {k: v for k, v in formatted.items() if v is not None}
+        formatted = {k: v for k, v in formatted.items() if v not in (None, '')}
 
         return formatted
 

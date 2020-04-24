@@ -24,7 +24,8 @@ class CityTestSFAppointments(Core):
             'datetime',
             'datetimeCreated',
             'id',
-            'canceled'
+            'canceled',
+            'calendarID'
         ]
         if extra_fields:
             top_level_fields += extra_fields

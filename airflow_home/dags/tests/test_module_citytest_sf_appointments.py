@@ -158,3 +158,12 @@ def test_parse_formio_insurance_primary_holder_parent():
         'primaryHolderHealthInsuranceLastname': 'unit'
     }
     assert expected_insurance.items() <= appt.items()
+
+def test_parse_formio_no_employer():
+    """Verify that parsing works if no employer is provided."""
+    with open('airflow_home/dags/tests/mocks/formio_without_employer.json', 'r') as appt_file:
+        mock_appt = json.load(appt_file)
+        appt = CityTestSFAppointments.parse_formio_response(mock_appt)
+        assert appt['employer'] is None
+        print(appt)
+        assert False

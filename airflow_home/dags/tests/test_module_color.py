@@ -252,3 +252,12 @@ def test_filters_out_empty_strings():
     resp = color.format_appointment(appt)
 
     assert 'middle_name' not in resp
+
+def test_parse_no_employer():
+    """Verify that parsing for Color doesn't fail if no employer is present."""
+    color = Color()
+
+    # Test with county
+    appt = {**SAMPLE_APPOINTMENT_CONTRACTOR, **{'employer': None}}
+    resp = color.format_appointment(appt)
+    assert 'employer_name' not in resp

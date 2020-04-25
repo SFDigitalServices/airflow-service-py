@@ -34,6 +34,21 @@ def pull_from_acuity(**context):
         'info'
     )
 
+    if not parsed_appointment['formioId'] and parsed_appointment['email']:
+        parsed_appointment['formioId'] = CityTestSFAppointments.get_formio_id_by_email(
+            parsed_appointment['email'])
+
+        sentry_sdk.capture_message(
+            # pylint: disable=line-too-long
+            """
+            citytest_sf.appointments.pull_from_acuity attempted to find formio_id with id {acuity_id},formio_id {formio_id}
+            """.format(
+                acuity_id=acuity_id,
+                formio_id=parsed_appointment['formioId']
+            ),
+            'info'
+        )
+
     # Save data
     task_instance = context['task_instance']
     task_instance.xcom_push(key='formio_id', value=parsed_appointment['formioId'])

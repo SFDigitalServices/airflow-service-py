@@ -1,6 +1,7 @@
 #pylint: disable=duplicate-code
 """Test functions from modules/citytest_sf_appointments"""
 import json
+from unittest.mock import patch
 from modules.citytest_sf_appointments import CityTestSFAppointments
 
 def test_format_acuity_appointment():
@@ -158,3 +159,19 @@ def test_parse_formio_insurance_primary_holder_parent():
         'primaryHolderHealthInsuranceLastname': 'unit'
     }
     assert expected_insurance.items() <= appt.items()
+
+def test_get_formio_id_by_email():
+    """ Verify Form.io ID query by email """
+    with open(
+            'airflow_home/dags/tests/mocks/formio_contractor_unlisted_company_self_insured.json',
+            'r'
+        ) as appt_file:
+        mock_appt = json.load(appt_file)
+        mock_appts = [mock_appt]
+
+        with patch('modules.formio.Formio.get_formio_submission_by_query') as mock:
+            mock.return_value = mock_appts
+            formio_id = CityTestSFAppointments.get_formio_id_by_email(
+                "testWithUnlistedEmployer@test.com")
+
+    assert formio_id == "5e98b5cdcc554a79aa0e7524"

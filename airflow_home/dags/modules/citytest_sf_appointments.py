@@ -6,6 +6,7 @@ import sentry_sdk
 
 from modules.core import Core
 from modules.acuity import Acuity
+from modules.formio import Formio
 
 class CityTestSFAppointments(Core):
     """Functions related to business logic around CityTestSF appts."""
@@ -129,3 +130,13 @@ class CityTestSFAppointments(Core):
                 )
             merged.append({**appointment, **formio_merge})
         return merged
+
+    @staticmethod
+    def get_formio_id_by_email(email):
+        """ Get formio submission by email address """
+        responses = Formio.get_formio_submission_by_query(
+            {'data.preferredEmail': email})
+
+        if responses and isinstance(responses, list) and len(responses) > 0:
+            return responses[0]['_id']
+        return None

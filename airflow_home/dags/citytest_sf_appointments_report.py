@@ -35,7 +35,7 @@ dag = DAG(
     'citytest_sf_report_appt',
     default_args=default_args,
     description='CityTestSF Appointment Report DAG',
-    schedule_interval='*/5 * * * *',
+    schedule_interval=None,
     max_active_runs=1,
     catchup=False
 )

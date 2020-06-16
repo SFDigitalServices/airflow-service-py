@@ -1,4 +1,4 @@
-# SFDS airflow-service-py [![CircleCI](https://badgen.net/circleci/github/SFDigitalServices/airflow-service-py/master)](https://circleci.com/gh/SFDigitalServices/airflow-service-py) [![Coverage Status](https://coveralls.io/repos/github/SFDigitalServices/airflow-service-py/badge.svg?branch=master)](https://coveralls.io/github/SFDigitalServices/airflow-service-py?branch=master)
+# SFDS airflow-service-py [![CircleCI](https://badgen.net/circleci/github/SFDigitalServices/airflow-service-py/main)](https://circleci.com/gh/SFDigitalServices/airflow-service-py) [![Coverage Status](https://coveralls.io/repos/github/SFDigitalServices/airflow-service-py/badge.svg?branch=main)](https://coveralls.io/github/SFDigitalServices/airflow-service-py?branch=main)
 SFDS Airflow Service (Python)
 
 ## Requirement
@@ -67,3 +67,15 @@ Code coverage command with missing statement line numbers
 * CircleCI builds fail when trying to run coveralls.
     1. Log into coveralls.io to obtain the coverall token for your repo.
     2. Create an environment variable in CircleCI with the name COVERALLS_REPO_TOKEN and the coverall token value.
+
+
+## Branch information
+
+### main
+Vanilla branch. This branch ontains bare minimum to get started on a new airflow instance.
+
+### tutorial
+Tutorial branch. This branch contains examples and tutorials to help get familiar with airflow.
+
+### sfds
+SFDS branch. This branch contains DAGs relevant to SFDS.
